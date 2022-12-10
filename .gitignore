@@ -1,0 +1,7 @@
+app/*
+models/*
+data/*
+DEFAUL_README.md
+.DS_Store
+ETL Pipeline Preparation.ipynb
+ML Pipeline Preparation.ipynb
