@@ -150,6 +150,8 @@ def clean_data(df):
     # Removes messages without any alphanumerical characters
     df.drop(df[df['message'].str.match(re_not_text)].index, inplace = True)
 
+    df = df[df['message'] != '#NAME?'].copy()
+
     df['infered_language'] = df['message'].apply(infer_lang)
 
     df = preprocess_text(df, 'message')
