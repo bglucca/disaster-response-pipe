@@ -88,10 +88,13 @@ def preprocess_text(df, txt_col):
 
     re_url_pattern = r'http(s)?:\/\/[\w.-_]+\s'
 
+    re_twitter_pat = r'(@\S+)|(#\S+)'
+
     cleaned_txt_col_name = f'{txt_col}_clean'
 
-    # Puts an 'url_placeholder' string inplace of URLs
-    df[cleaned_txt_col_name] = df[txt_col].str.replace(re_url_pattern, 'url_placeholder ', regex = True)
+    df[cleaned_txt_col_name] = df[txt_col].str.replace(re_twitter_pat, ' ', regex = True)
+
+    df[cleaned_txt_col_name] = df[cleaned_txt_col_name].str.replace(re_url_pattern, ' ', regex = True)
 
     df[cleaned_txt_col_name] = df[cleaned_txt_col_name].str.replace(re_non_alnum_pattern,' ',regex = True)
 
