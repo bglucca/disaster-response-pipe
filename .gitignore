@@ -1,7 +1,6 @@
 app/*
-models/*
+models/train_classifier.py
 DEFAUL_README.md
 .DS_Store
 ETL Pipeline Preparation.ipynb
 ML Pipeline Preparation.ipynb
-models_results/*
