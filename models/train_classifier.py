@@ -52,7 +52,7 @@ def load_data(database_filepath):
 
     df = df[language_filter]
 
-    X = df[['message_cleaned','genre']]
+    X = df[['message_cleaned','genre']].values
 
     y = df[cat_names]
     
@@ -77,8 +77,8 @@ def tokenizer(text):
 
 def build_model():
 
-    full_ct = ColumnTransformer([('tfidf',TfidfVectorizer(analyzer = 'word', tokenizer = tokenizer, ngram_range= (1,2)), 'message_cleaned'),
-                                    ('onehot',OneHotEncoder(),['genre'])])
+    full_ct = ColumnTransformer([('tfidf',TfidfVectorizer(analyzer = 'word', tokenizer = tokenizer, ngram_range= (1,2)), 0),
+                                    ('onehot',OneHotEncoder(),[1])])
 
     model = Pipeline([('ColumnTransformer', full_ct),
                     ('clf', MultiOutputClassifier(LogisticRegression(random_state=123,solver = 'saga',max_iter=200, C=5, n_jobs=-1),n_jobs=-1))])
