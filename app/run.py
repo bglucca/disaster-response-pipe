@@ -22,6 +22,14 @@ en_stopwords = [re.sub('\W','', word) for word in en_stopwords]
 app = Flask(__name__)
 
 def preprocess_text(text):
+
+    '''
+    Preprocesses and cleans the text input to match the preprocessing done to features on the trained model.
+
+    :param text: String to be preprocessed
+
+    :return cleaned_text: Preprocessed string
+    '''
   
     re_non_alnum_pattern = r'[^\w\s]'
 
@@ -45,6 +53,14 @@ def preprocess_text(text):
     return cleaned_text
 
 def tokenizer(text):
+    '''
+    Tokenizer to be used in the model.
+    Removes stopwords, lemmatizes and stemms the text tokens.
+
+    :param text: String to be tokenized
+
+    :return tokens: Tokenized string
+    '''
 
     tokens = text.split(' ')
 
@@ -79,9 +95,12 @@ model = joblib.load("../models/classifier.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
+
+    '''
+    Renderer for the index (home) page
+    '''
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
@@ -102,7 +121,6 @@ def index():
     plot_corrs_phi = plot_corrs['value'].values
 
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -172,6 +190,9 @@ def index():
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    '''
+    Renderer for the go (prediction results) page
+    '''
     # save user input in query
     query = request.args.get('query', '')
 

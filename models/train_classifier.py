@@ -39,6 +39,15 @@ en_stopwords = stopwords.words('english')
 en_stopwords = [re.sub('\W','', word) for word in en_stopwords]
 
 def load_data(database_filepath):
+    '''
+    Load database from SQLite
+
+    :param database_filepath: Path to the cleaned database in SQLite
+
+    :return X: np.array with features to use for prediction
+    :return y: np.array with features to be predicted
+    :return cat_names: names of the categories that are predicted
+    '''
 
     conn = sqlalchemy.create_engine('sqlite:///' + os.path.abspath(database_filepath))
 
@@ -62,6 +71,13 @@ def load_data(database_filepath):
 
 
 def tokenizer(text):
+    '''
+    Tokenizes, Lemmatizes and Stemms a string.
+
+    :param text: String to be tokenized
+
+    :return tokens: List of tokens that are in the string
+    '''
 
     tokens = text.split(' ')
 
@@ -78,6 +94,11 @@ def tokenizer(text):
     return tokens
 
 def build_model():
+    '''
+    Instantiate a GridSearchCV to be tuned.
+
+    :return cv: GridSearchCV object with the respective parameters
+    '''
 
     full_ct = ColumnTransformer([('tfidf',TfidfVectorizer(analyzer = 'word', tokenizer = tokenizer, ngram_range= (1,2)), 0),
                                     ('onehot',OneHotEncoder(),[1])])
@@ -97,6 +118,14 @@ def build_model():
         
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    Evaluates and prints to terminal a model result based on f1-score, recall, precision and hamming loss (overall single labels matched correctly)
+
+    :param model: Instance of a model
+    :param X_test: Test features to be used as predictors
+    :param Y_test: Test features to be predicted
+    :param category_names: list of strings with the name of the categories
+    '''
 
     Y_pred = model.predict(X_test)
 
@@ -105,12 +134,22 @@ def evaluate_model(model, X_test, Y_test, category_names):
     
 
 def save_model(model, model_filepath):
+
+    '''
+    Saves the model as a .pkl file according to the model_filepath
+
+    :param model: Instance of the model to be saved
+    :param model_filepath: path to save the .pkl to
+    '''
     
     with open(model_filepath,'wb') as file:
 
         pickle.dump(model, file)
 
 def main():
+    '''
+    Runs the training pipeline. Loads the data, instantiates the model, tune its hyperparameters and with the best estimator, evaluates the model and saves it.
+    '''
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
 

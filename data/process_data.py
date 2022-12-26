@@ -143,6 +143,13 @@ def load_data(messages_filepath = 'disaster_messages.csv', categories_filepath =
 
 
 def clean_data(df):
+    '''
+    Executes tranformations to data
+    
+    :param df: DataFrame that contains "message" column to be cleaned
+    
+    :return df: Cleaned frame with infered language
+    '''
 
     re_not_text = r'^\W+$'
 
