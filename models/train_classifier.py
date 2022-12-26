@@ -40,7 +40,7 @@ def load_data(database_filepath):
 
     conn = sqlalchemy.create_engine('sqlite:///' + os.path.abspath(database_filepath))
 
-    df = pd.read_sql('SELECT * FROM ANALYTICAL_TABLE', conn)
+    df = pd.read_sql_table('ANALYTICAL_TABLE', conn)
 
     df.set_index('index', inplace = True)
 
@@ -52,7 +52,7 @@ def load_data(database_filepath):
 
     df = df[language_filter]
 
-    X = df[['message_cleaned','genre']].values
+    X = df[['message_clean','genre']].values
 
     y = df[cat_names]
     
