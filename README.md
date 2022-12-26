@@ -23,12 +23,42 @@ To run each part of the project, one can simply go into the directories and run 
 
 Results can only be guaranteed if the project is run using the requirements defined.
 
+### Running the ETL to SQLite 3 (cmd)
+``` 
+cd data
+
+.../data> python process_data.py disaster_messages.csv disaster_categories.csv DisasterResponse.db
+
+```
+
+### Running the model trainer (cmd)
+``` 
+cd models
+
+.../models> python train_classifier.py ..data/DisasterResponse.db [NAME_OF_CLASSIFIER].pkl
+
+```
+
+**On this step, since the script contains a [GridSearchCV](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) it can take a while to run depending on your local setup.**
+
+### Running the app (cmd)
+To run the app with the current model:
+
+``` 
+cd app
+
+.../app> python run.py
+
+```
+
+When the app starts up, an IP adress that contains the rendering of the app will show up in the prompt. Just click or copy-paste in browser to see the running app. 
+
 ## Folder structure
 ```
 ├───app -> Contains the Web app and HTML templates
-│   └───templates
+│   └───templates -> HTML templates that are rendered
 ├───data -> Contains ETL scripts and raw/refined data
-├───models -> Result files related to modelling
+├───models -> Result files and script related to modelling
 └───notebooks -> Contains notebooks used in ETL and modelling exploration
 ```
 ## Acknowledgements
