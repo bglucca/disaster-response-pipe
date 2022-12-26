@@ -28,6 +28,8 @@ from sklearn.multioutput import MultiOutputClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import hamming_loss
 from sklearn.metrics import classification_report
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import GridSearchCV
 
 
 ###################### SCRIPT ########################
@@ -80,11 +82,18 @@ def build_model():
     full_ct = ColumnTransformer([('tfidf',TfidfVectorizer(analyzer = 'word', tokenizer = tokenizer, ngram_range= (1,2)), 0),
                                     ('onehot',OneHotEncoder(),[1])])
 
-    model = Pipeline([('ColumnTransformer', full_ct),
-                    ('clf', MultiOutputClassifier(LogisticRegression(random_state=123,solver = 'saga',max_iter=200, C=5, n_jobs=-1),n_jobs=-1))])
+    pipe = Pipeline([('ColumnTransformer', full_ct),
+                    ('clf', MultiOutputClassifier(LogisticRegression(random_state=123,solver = 'saga',max_iter=200, n_jobs=-1),n_jobs=-1))])
 
+    hamming_score = make_scorer(hamming_loss, greater_is_better=False)
 
-    return model
+    params = {'ColumnTransformer__tfidf__ngram_range':[(1,1),(1,2)],
+                'clf__estimator__C':[1,5]}
+
+    # Using cv = 2 for processing time reasons
+    cv = GridSearchCV(pipe, param_grid=params,scoring = hamming_score, cv = 2 ,n_jobs = -1)
+
+    return cv
         
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -111,10 +120,15 @@ def main():
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
-        model = build_model()
+        cv = build_model()
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        cv.fit(X_train, Y_train)
+
+        print('Best model hyperparameters:')
+        print(cv.best_params_)
+    
+        model = cv.best_estimator_
         
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
